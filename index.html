@@ -1,0 +1,1777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Bill Split</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --light: #f8fafc;
+            --dark: #1e293b;
+            --gray: #64748b;
+            --border: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: var(--dark);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 25px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            color: var(--primary);
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+
+        .main-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 900px) {
+            .main-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .card-title {
+            color: var(--primary);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.3rem;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        /* Progress Steps */
+        .steps-container {
+            margin: 30px 0;
+        }
+
+        .steps-bar {
+            height: 6px;
+            background: var(--border);
+            border-radius: 3px;
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .steps-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            width: 25%;
+            transition: width 0.5s ease;
+        }
+
+        .steps {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        .step {
+            text-align: center;
+            z-index: 2;
+        }
+
+        .step-number {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--border);
+            color: var(--gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin: 0 auto 8px;
+            border: 3px solid white;
+            transition: all 0.3s;
+        }
+
+        .step.active .step-number {
+            background: var(--primary);
+            color: white;
+        }
+
+        .step.completed .step-number {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .step-label {
+            font-size: 0.85rem;
+            color: var(--gray);
+            font-weight: 500;
+        }
+
+        .step.active .step-label {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .tab-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 10px;
+            background: var(--light);
+            color: var(--gray);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tab-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Input Groups */
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .input-group input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        /* Items List */
+        .items-list {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+
+        .item-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px;
+            background: #f8fafc;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            border-left: 4px solid var(--primary);
+            transition: all 0.3s;
+        }
+
+        .item-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .item-info {
+            flex: 1;
+        }
+
+        .item-name {
+            font-weight: 600;
+        }
+
+        .item-price {
+            color: var(--secondary);
+            font-weight: 700;
+        }
+
+        .item-category {
+            display: inline-block;
+            padding: 3px 10px;
+            background: #dbeafe;
+            color: var(--primary);
+            border-radius: 15px;
+            font-size: 0.75rem;
+            margin-top: 5px;
+        }
+
+        .item-alcohol {
+            background: #fee2e2;
+            color: var(--danger);
+        }
+
+        .item-drink {
+            background: #fef3c7;
+            color: var(--warning);
+        }
+
+        /* People Grid */
+        .people-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .person-card {
+            background: white;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .person-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .person-card.selected {
+            border-color: var(--primary);
+            background: #f0f9ff;
+            box-shadow: 0 5px 15px rgba(37, 99, 235, 0.1);
+        }
+
+        .person-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), #3b82f6);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin: 0 auto 10px;
+        }
+
+        .person-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .person-status {
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+
+        /* Results */
+        .results-container {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 25px;
+        }
+
+        .total-amount {
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .split-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .split-item:last-child {
+            border-bottom: none;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #0da271;
+            transform: translateY(-2px);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        /* Sections */
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Assignment Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            display: none;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        /* Split Options */
+        .split-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .split-option {
+            padding: 20px;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .split-option:hover {
+            border-color: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        .split-option.selected {
+            border-color: var(--primary);
+            background: #f0f9ff;
+        }
+
+        .split-option i {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1><i class="fas fa-money-bill-wave"></i> Smart Bill Split</h1>
+            <p>Add bill items → Assign to people → Get accurate split</p>
+        </header>
+
+        <!-- Progress Steps -->
+        <div class="steps-container">
+            <div class="steps-bar">
+                <div class="steps-fill" id="stepsFill"></div>
+            </div>
+            <div class="steps">
+                <div class="step active" id="step1">
+                    <div class="step-number">1</div>
+                    <div class="step-label">Add Items</div>
+                </div>
+                <div class="step" id="step2">
+                    <div class="step-number">2</div>
+                    <div class="step-label">Review Items</div>
+                </div>
+                <div class="step" id="step3">
+                    <div class="step-number">3</div>
+                    <div class="step-label">Add People</div>
+                </div>
+                <div class="step" id="step4">
+                    <div class="step-number">4</div>
+                    <div class="step-label">Split Bill</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-container">
+            <!-- Left Column -->
+            <div class="card">
+                <!-- Step 1: Add Items -->
+                <div class="section active" id="section1">
+                    <h2 class="card-title"><i class="fas fa-plus-circle"></i> Add Bill Items</h2>
+                    
+                    <div class="tabs">
+                        <button class="tab-btn active" onclick="switchTab('manual')">
+                            <i class="fas fa-keyboard"></i> Manual Entry
+                        </button>
+                        <button class="tab-btn" onclick="switchTab('sample')">
+                            <i class="fas fa-file-invoice"></i> Sample Bill
+                        </button>
+                    </div>
+
+                    <!-- Manual Tab -->
+                    <div id="manualTab" class="tab-content">
+                        <div class="input-group">
+                            <input type="text" id="itemName" placeholder="Item name (e.g., Pizza)" onkeypress="if(event.key=='Enter')addManualItem()">
+                            <input type="number" id="itemPrice" placeholder="Price (₹)" onkeypress="if(event.key=='Enter')addManualItem()">
+                            <button class="btn btn-primary" onclick="addManualItem()">
+                                <i class="fas fa-plus"></i> Add
+                            </button>
+                        </div>
+                        
+                        <div id="manualItems" class="items-list">
+                            <!-- Items will appear here -->
+                        </div>
+                        
+                        <div class="input-group">
+                            <input type="number" id="taxAmount" placeholder="Tax amount (₹)" value="0">
+                            <input type="number" id="tipAmount" placeholder="Tip amount (₹)" value="0">
+                            <button class="btn" onclick="addTaxTip()" style="background: var(--warning); color: white;">
+                                <i class="fas fa-percentage"></i> Add
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Sample Tab -->
+                    <div id="sampleTab" class="tab-content hidden">
+                        <div style="text-align: center; padding: 20px;">
+                            <p style="margin-bottom: 15px;">Load a sample restaurant bill:</p>
+                            <button class="btn btn-primary" onclick="loadSampleBill()" style="width: 100%;">
+                                <i class="fas fa-file-invoice-dollar"></i> Load Sample Bill
+                            </button>
+                            <div style="margin-top: 20px; padding: 15px; background: #f0f9ff; border-radius: 10px;">
+                                <p style="font-size: 0.9rem; color: var(--gray);">
+                                    <i class="fas fa-info-circle"></i> Sample includes: Pizza, Pasta, Drinks, Desserts
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary" onclick="nextStep()" style="width: 100%; margin-top: 20px;">
+                        <i class="fas fa-arrow-right"></i> Continue to Review Items
+                    </button>
+                </div>
+
+                <!-- Step 2: Review Items -->
+                <div class="section" id="section2">
+                    <h2 class="card-title"><i class="fas fa-list-check"></i> Review Bill Items</h2>
+                    
+                    <div style="background: #f0f9ff; padding: 15px; border-radius: 10px; margin-bottom: 20px;">
+                        <p><strong>Total Bill Amount:</strong> ₹<span id="billTotalDisplay">0</span></p>
+                        <p><strong>Items:</strong> <span id="itemCount">0</span></p>
+                        <p><strong>Tax:</strong> ₹<span id="taxDisplay">0</span> | <strong>Tip:</strong> ₹<span id="tipDisplay">0</span></p>
+                    </div>
+
+                    <div id="detectedItems" class="items-list">
+                        <!-- Items will appear here -->
+                    </div>
+
+                    <div class="btn-group">
+                        <button class="btn" onclick="prevStep()" style="background: var(--border);">
+                            <i class="fas fa-arrow-left"></i> Back
+                        </button>
+                        <button class="btn btn-primary" onclick="nextStep()">
+                            <i class="fas fa-users"></i> Add People
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 3: Add People -->
+                <div class="section" id="section3">
+                    <h2 class="card-title"><i class="fas fa-user-plus"></i> Who Was There?</h2>
+                    
+                    <div class="input-group">
+                        <input type="text" id="newPersonName" placeholder="Enter friend's name" onkeypress="if(event.key=='Enter')addPerson()">
+                        <button class="btn btn-primary" onclick="addPerson()">
+                            <i class="fas fa-plus"></i> Add Person
+                        </button>
+                    </div>
+
+                    <div id="peopleList" class="people-grid">
+                        <!-- People will appear here -->
+                    </div>
+
+                    <div class="btn-group">
+                        <button class="btn" onclick="prevStep()" style="background: var(--border);">
+                            <i class="fas fa-arrow-left"></i> Back
+                        </button>
+                        <button class="btn btn-primary" onclick="nextStep()">
+                            <i class="fas fa-hand-point-right"></i> Split Bill
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 4: Split Bill -->
+                <div class="section" id="section4">
+                    <h2 class="card-title"><i class="fas fa-calculator"></i> How to Split?</h2>
+                    
+                    <div class="split-options">
+                        <div class="split-option selected" onclick="selectSplitMethod('itemwise')">
+                            <i class="fas fa-hand-point-right"></i>
+                            <h3>Item-wise Split</h3>
+                            <p>Assign each item to specific people</p>
+                        </div>
+                        
+                        <div class="split-option" onclick="selectSplitMethod('equal')">
+                            <i class="fas fa-equals"></i>
+                            <h3>Equal Split</h3>
+                            <p>Split total equally among all</p>
+                        </div>
+                        
+                        <div class="split-option" onclick="selectSplitMethod('custom')">
+                            <i class="fas fa-sliders-h"></i>
+                            <h3>Custom Split</h3>
+                            <p>Set custom percentages</p>
+                        </div>
+                        
+                        <div class="split-option" onclick="selectSplitMethod('shares')">
+                            <i class="fas fa-chart-pie"></i>
+                            <h3>By Shares</h3>
+                            <p>Divide based on shares</p>
+                        </div>
+                    </div>
+
+                    <div id="itemwiseSplitSection">
+                        <h3 style="margin: 25px 0 15px 0; color: var(--primary);">
+                            <i class="fas fa-hand-pointer"></i> Assign Items to People
+                        </h3>
+                        <p style="margin-bottom: 20px; color: var(--gray);">Click on items to assign them to specific people</p>
+
+                        <div id="assignableItems" class="items-list">
+                            <!-- Assignable items will appear here -->
+                        </div>
+                    </div>
+
+                    <div id="equalSplitSection" class="hidden">
+                        <div style="background: #f0f9ff; padding: 20px; border-radius: 10px; margin-top: 20px;">
+                            <h3 style="color: var(--primary); margin-bottom: 15px;">
+                                <i class="fas fa-equals"></i> Equal Split Preview
+                            </h3>
+                            <p>Total bill will be divided equally among all <span id="equalPeopleCount">0</span> people</p>
+                            <p style="margin-top: 10px; font-size: 1.2rem;">
+                                <strong>Each person pays:</strong> ₹<span id="equalSplitAmount">0</span>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div id="customSplitSection" class="hidden">
+                        <div style="background: #f0f9ff; padding: 20px; border-radius: 10px; margin-top: 20px;">
+                            <h3 style="color: var(--primary); margin-bottom: 15px;">
+                                <i class="fas fa-sliders-h"></i> Custom Percentages
+                            </h3>
+                            <div id="customPercentages">
+                                <!-- Custom percentage inputs will appear here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="sharesSplitSection" class="hidden">
+                        <div style="background: #f0f9ff; padding: 20px; border-radius: 10px; margin-top: 20px;">
+                            <h3 style="color: var(--primary); margin-bottom: 15px;">
+                                <i class="fas fa-chart-pie"></i> Set Shares
+                            </h3>
+                            <div id="sharesInputs">
+                                <!-- Share inputs will appear here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="btn-group">
+                        <button class="btn" onclick="prevStep()" style="background: var(--border);">
+                            <i class="fas fa-arrow-left"></i> Back
+                        </button>
+                        <button class="btn btn-primary" onclick="calculateSplit()" id="calculateBtn">
+                            <i class="fas fa-calculator"></i> Calculate Split
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 5: Results -->
+                <div class="section" id="section5">
+                    <h2 class="card-title"><i class="fas fa-chart-pie"></i> Bill Split Results</h2>
+                    
+                    <div class="results-container">
+                        <div class="total-amount" id="finalTotal">₹0</div>
+                        
+                        <div id="splitResults">
+                            <!-- Results will appear here -->
+                        </div>
+                    </div>
+
+                    <div class="btn-group">
+                        <button class="btn" onclick="prevStep()" style="background: var(--border);">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button class="btn btn-primary" onclick="shareResults()">
+                            <i class="fab fa-whatsapp"></i> Share
+                        </button>
+                        <button class="btn" onclick="resetApp()" style="background: var(--danger); color: white;">
+                            <i class="fas fa-redo"></i> New Bill
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column -->
+            <div class="card">
+                <h2 class="card-title"><i class="fas fa-info-circle"></i> Bill Summary</h2>
+                
+                <div id="summaryContent">
+                    <div style="text-align: center; padding: 40px 20px; color: var(--gray);">
+                        <i class="fas fa-receipt" style="font-size: 3rem; margin-bottom: 15px;"></i>
+                        <p>Add bill items to see details</p>
+                    </div>
+                </div>
+
+                <div id="currentAssignments" class="hidden" style="margin-top: 25px;">
+                    <h3 style="color: var(--primary); margin-bottom: 10px;">
+                        <i class="fas fa-user-check"></i> Current Assignments
+                    </h3>
+                    <div id="assignmentsList" style="font-size: 0.9rem;">
+                        <!-- Assignment summary -->
+                    </div>
+                </div>
+
+                <div style="margin-top: 25px; padding: 15px; background: #f0f9ff; border-radius: 10px;">
+                    <h4 style="color: var(--primary); margin-bottom: 10px;">
+                        <i class="fas fa-lightbulb"></i> Quick Actions
+                    </h4>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <button class="btn" onclick="autoAssignSharedItems()" style="padding: 8px; font-size: 0.9rem;">
+                            <i class="fas fa-random"></i> Auto-Assign
+                        </button>
+                        <button class="btn" onclick="clearAssignments()" style="padding: 8px; font-size: 0.9rem; background: var(--danger); color: white;">
+                            <i class="fas fa-trash"></i> Clear All
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Assignment Modal -->
+    <div class="modal-overlay" id="assignmentModal">
+        <div class="modal">
+            <h3 id="modalTitle" style="margin-bottom: 20px; color: var(--primary);"></h3>
+            <div id="modalPeopleList" class="people-grid">
+                <!-- People for assignment -->
+            </div>
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button class="btn" onclick="closeModal()" style="background: var(--border); flex: 1;">
+                    Cancel
+                </button>
+                <button class="btn btn-primary" onclick="saveAssignment()" style="flex: 1;">
+                    Save Assignment
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Application State
+        const state = {
+            currentStep: 1,
+            billItems: [],
+            people: [],
+            assignments: {},
+            tax: 0,
+            tip: 0,
+            splitMethod: 'itemwise',
+            customPercentages: {},
+            shares: {},
+            currency: '₹'
+        };
+
+        // DOM Elements
+        let currentItemForAssignment = null;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            setupEventListeners();
+            updateProgress();
+            addDefaultPeople();
+        });
+
+        function setupEventListeners() {
+            // Enter key for inputs
+            document.getElementById('itemName').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') addManualItem();
+            });
+
+            document.getElementById('newPersonName').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') addPerson();
+            });
+        }
+
+        // Step 1: Add Items
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.add('hidden'));
+            
+            if (tabName === 'manual') {
+                document.querySelector('.tab-btn:nth-child(1)').classList.add('active');
+                document.getElementById('manualTab').classList.remove('hidden');
+            } else if (tabName === 'sample') {
+                document.querySelector('.tab-btn:nth-child(2)').classList.add('active');
+                document.getElementById('sampleTab').classList.remove('hidden');
+            }
+        }
+
+        function generateId() {
+            return Date.now() + Math.random().toString(36).substr(2, 9);
+        }
+
+        function detectCategory(itemName) {
+            const name = itemName.toLowerCase();
+            if (name.includes('beer') || name.includes('wine') || name.includes('whisky') || 
+                name.includes('vodka') || name.includes('rum') || name.includes('alcohol')) {
+                return 'alcohol';
+            } else if (name.includes('coke') || name.includes('pepsi') || name.includes('soda') ||
+                      name.includes('juice') || name.includes('water') || name.includes('drink')) {
+                return 'drink';
+            } else if (name.includes('ice cream') || name.includes('dessert') || name.includes('cake')) {
+                return 'dessert';
+            }
+            return 'food';
+        }
+
+        function addManualItem() {
+            const nameInput = document.getElementById('itemName');
+            const priceInput = document.getElementById('itemPrice');
+            
+            const name = nameInput.value.trim();
+            const price = parseFloat(priceInput.value);
+            
+            if (!name || !price || price <= 0) {
+                alert('Please enter valid item name and price');
+                return;
+            }
+            
+            const category = detectCategory(name);
+            const item = {
+                id: generateId(),
+                name: name,
+                price: price,
+                category: category
+            };
+            
+            state.billItems.push(item);
+            
+            // Clear inputs
+            nameInput.value = '';
+            priceInput.value = '';
+            nameInput.focus();
+            
+            updateManualItemsDisplay();
+            updateSummary();
+        }
+
+        function updateManualItemsDisplay() {
+            const container = document.getElementById('manualItems');
+            container.innerHTML = '';
+            
+            state.billItems.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'item-card';
+                div.innerHTML = `
+                    <div class="item-info">
+                        <div class="item-name">${item.name}</div>
+                        <div class="item-price">${state.currency}${item.price}</div>
+                        <div class="item-category ${item.category === 'alcohol' ? 'item-alcohol' : item.category === 'drink' ? 'item-drink' : ''}">
+                            ${item.category}
+                        </div>
+                    </div>
+                    <button onclick="removeItem('${item.id}')" style="background: var(--danger); color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function removeItem(itemId) {
+            const index = state.billItems.findIndex(item => item.id === itemId);
+            if (index > -1) {
+                state.billItems.splice(index, 1);
+                updateManualItemsDisplay();
+                updateSummary();
+            }
+        }
+
+        function addTaxTip() {
+            const tax = parseFloat(document.getElementById('taxAmount').value) || 0;
+            const tip = parseFloat(document.getElementById('tipAmount').value) || 0;
+            
+            state.tax = tax;
+            state.tip = tip;
+            
+            updateSummary();
+        }
+
+        function loadSampleBill() {
+            state.billItems = [
+                { id: generateId(), name: 'Paneer Tikka', price: 280, category: 'food' },
+                { id: generateId(), name: 'Butter Chicken', price: 320, category: 'food' },
+                { id: generateId(), name: 'Garlic Naan (4 pcs)', price: 120, category: 'food' },
+                { id: generateId(), name: 'Coke (3 bottles)', price: 210, category: 'drink' },
+                { id: generateId(), name: 'Beer (2 pints)', price: 400, category: 'alcohol' },
+                { id: generateId(), name: 'Chocolate Brownie', price: 150, category: 'dessert' }
+            ];
+            
+            state.tax = 200;
+            state.tip = 150;
+            
+            updateManualItemsDisplay();
+            updateSummary();
+            
+            document.getElementById('taxAmount').value = state.tax;
+            document.getElementById('tipAmount').value = state.tip;
+            
+            alert('Sample bill loaded! Review the items and continue.');
+        }
+
+        // Step 2: Review Items
+        function showDetectedItems() {
+            const container = document.getElementById('detectedItems');
+            const total = getBillTotal();
+            
+            container.innerHTML = '';
+            
+            state.billItems.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'item-card';
+                div.innerHTML = `
+                    <div class="item-info">
+                        <div class="item-name">${item.name}</div>
+                        <div class="item-price">${state.currency}${item.price}</div>
+                        <div class="item-category ${item.category === 'alcohol' ? 'item-alcohol' : item.category === 'drink' ? 'item-drink' : ''}">
+                            ${item.category}
+                        </div>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+            
+            if (state.tax > 0 || state.tip > 0) {
+                const taxTipDiv = document.createElement('div');
+                taxTipDiv.className = 'item-card';
+                taxTipDiv.style.borderLeftColor = 'var(--warning)';
+                taxTipDiv.innerHTML = `
+                    <div class="item-info">
+                        <div class="item-name">Tax & Tip</div>
+                        <div class="item-price">${state.currency}${state.tax + state.tip}</div>
+                    </div>
+                `;
+                container.appendChild(taxTipDiv);
+            }
+            
+            document.getElementById('billTotalDisplay').textContent = total;
+            document.getElementById('itemCount').textContent = state.billItems.length;
+            document.getElementById('taxDisplay').textContent = state.tax;
+            document.getElementById('tipDisplay').textContent = state.tip;
+        }
+
+        function getBillTotal() {
+            const itemsTotal = state.billItems.reduce((sum, item) => sum + item.price, 0);
+            return itemsTotal + state.tax + state.tip;
+        }
+
+        // Step 3: Add People
+        function addDefaultPeople() {
+            const defaultPeople = [
+                { id: generateId(), name: 'Aayush', status: 'regular' },
+                { id: generateId(), name: 'Khushi', status: 'regular' },
+                { id: generateId(), name: 'Daksh', status: 'regular' },
+                { id: generateId(), name: 'Aastha', status: 'non-drinker' }
+            ];
+            
+            state.people = defaultPeople;
+            renderPeopleList();
+        }
+
+        function addPerson() {
+            const input = document.getElementById('newPersonName');
+            const name = input.value.trim();
+            
+            if (!name) {
+                alert('Please enter a name');
+                return;
+            }
+            
+            if (state.people.length >= 10) {
+                alert('Maximum 10 people allowed');
+                return;
+            }
+            
+            if (state.people.some(p => p.name.toLowerCase() === name.toLowerCase())) {
+                alert('Person with this name already exists');
+                return;
+            }
+            
+            state.people.push({
+                id: generateId(),
+                name: name,
+                status: 'regular'
+            });
+            
+            input.value = '';
+            input.focus();
+            
+            renderPeopleList();
+        }
+
+        function renderPeopleList() {
+            const container = document.getElementById('peopleList');
+            container.innerHTML = '';
+            
+            state.people.forEach((person, index) => {
+                const colors = ['#2563eb', '#10b981', '#f59e0b', '#8b5cf6', '#ef4444', '#06b6d4'];
+                const color = colors[index % colors.length];
+                
+                const card = document.createElement('div');
+                card.className = 'person-card';
+                card.innerHTML = `
+                    <div class="person-avatar" style="background: ${color}">
+                        ${person.name.charAt(0)}
+                    </div>
+                    <div class="person-name">${person.name}</div>
+                    <div class="person-status">${person.status === 'non-drinker' ? 'No alcohol' : 'Regular'}</div>
+                    <div style="margin-top: 10px; display: flex; gap: 5px;">
+                        <button onclick="changePersonStatus(${index}, 'regular')" 
+                                style="padding: 3px 8px; font-size: 0.7rem; 
+                                       background: ${person.status === 'regular' ? 'var(--primary)' : 'var(--border)'}; 
+                                       color: ${person.status === 'regular' ? 'white' : 'var(--dark)'}; 
+                                       border: none; border-radius: 4px;">
+                            Regular
+                        </button>
+                        <button onclick="changePersonStatus(${index}, 'non-drinker')" 
+                                style="padding: 3px 8px; font-size: 0.7rem; 
+                                       background: ${person.status === 'non-drinker' ? 'var(--warning)' : 'var(--border)'}; 
+                                       color: ${person.status === 'non-drinker' ? 'white' : 'var(--dark)'}; 
+                                       border: none; border-radius: 4px;">
+                            No Drinks
+                        </button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+            
+            // Update equal split preview
+            updateEqualSplitPreview();
+        }
+
+        function changePersonStatus(index, status) {
+            state.people[index].status = status;
+            renderPeopleList();
+        }
+
+        // Step 4: Split Bill Options
+        function selectSplitMethod(method) {
+            state.splitMethod = method;
+            
+            // Update UI
+            document.querySelectorAll('.split-option').forEach(opt => opt.classList.remove('selected'));
+            event.currentTarget.classList.add('selected');
+            
+            // Show appropriate section
+            document.getElementById('itemwiseSplitSection').classList.add('hidden');
+            document.getElementById('equalSplitSection').classList.add('hidden');
+            document.getElementById('customSplitSection').classList.add('hidden');
+            document.getElementById('sharesSplitSection').classList.add('hidden');
+            
+            if (method === 'itemwise') {
+                document.getElementById('itemwiseSplitSection').classList.remove('hidden');
+                showAssignableItems();
+                document.getElementById('calculateBtn').innerHTML = '<i class="fas fa-calculator"></i> Calculate Split';
+            } else if (method === 'equal') {
+                document.getElementById('equalSplitSection').classList.remove('hidden');
+                updateEqualSplitPreview();
+                document.getElementById('calculateBtn').innerHTML = '<i class="fas fa-calculator"></i> Calculate Equal Split';
+            } else if (method === 'custom') {
+                document.getElementById('customSplitSection').classList.remove('hidden');
+                showCustomPercentages();
+                document.getElementById('calculateBtn').innerHTML = '<i class="fas fa-calculator"></i> Calculate Custom Split';
+            } else if (method === 'shares') {
+                document.getElementById('sharesSplitSection').classList.remove('hidden');
+                showSharesInputs();
+                document.getElementById('calculateBtn').innerHTML = '<i class="fas fa-calculator"></i> Calculate by Shares';
+            }
+        }
+
+        function updateEqualSplitPreview() {
+            const total = getBillTotal();
+            const peopleCount = state.people.length;
+            const eachAmount = peopleCount > 0 ? total / peopleCount : 0;
+            
+            document.getElementById('equalPeopleCount').textContent = peopleCount;
+            document.getElementById('equalSplitAmount').textContent = eachAmount.toFixed(2);
+        }
+
+        function showCustomPercentages() {
+            const container = document.getElementById('customPercentages');
+            container.innerHTML = '';
+            
+            state.people.forEach(person => {
+                const percentage = state.customPercentages[person.id] || (100 / state.people.length);
+                
+                const div = document.createElement('div');
+                div.style.display = 'flex';
+                div.style.alignItems = 'center';
+                div.style.justifyContent = 'space-between';
+                div.style.marginBottom = '10px';
+                div.style.padding = '10px';
+                div.style.background = 'white';
+                div.style.borderRadius = '8px';
+                
+                div.innerHTML = `
+                    <span>${person.name}</span>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <input type="number" value="${percentage.toFixed(2)}" min="0" max="100" step="0.01" 
+                               style="width: 80px; padding: 5px; border: 1px solid var(--border); border-radius: 4px;"
+                               onchange="updateCustomPercentage('${person.id}', this.value)">
+                        <span>%</span>
+                    </div>
+                `;
+                
+                container.appendChild(div);
+            });
+            
+            // Add validation message
+            const totalPercentage = Object.values(state.customPercentages).reduce((sum, val) => sum + val, 0) || 100;
+            const validationDiv = document.createElement('div');
+            validationDiv.style.marginTop = '15px';
+            validationDiv.style.padding = '10px';
+            validationDiv.style.background = totalPercentage === 100 ? '#d1fae5' : '#fee2e2';
+            validationDiv.style.color = totalPercentage === 100 ? '#065f46' : '#991b1b';
+            validationDiv.style.borderRadius = '8px';
+            validationDiv.style.fontSize = '0.9rem';
+            validationDiv.innerHTML = `
+                <i class="fas fa-${totalPercentage === 100 ? 'check-circle' : 'exclamation-triangle'}"></i>
+                Total: ${totalPercentage.toFixed(2)}% ${totalPercentage === 100 ? '(Perfect!)' : '(Should be 100%)'}
+            `;
+            container.appendChild(validationDiv);
+        }
+
+        function updateCustomPercentage(personId, value) {
+            const percentage = parseFloat(value) || 0;
+            state.customPercentages[personId] = percentage;
+            showCustomPercentages();
+        }
+
+        function showSharesInputs() {
+            const container = document.getElementById('sharesInputs');
+            container.innerHTML = '';
+            
+            state.people.forEach(person => {
+                const share = state.shares[person.id] || 1;
+                
+                const div = document.createElement('div');
+                div.style.display = 'flex';
+                div.style.alignItems = 'center';
+                div.style.justifyContent = 'space-between';
+                div.style.marginBottom = '10px';
+                div.style.padding = '10px';
+                div.style.background = 'white';
+                div.style.borderRadius = '8px';
+                
+                div.innerHTML = `
+                    <span>${person.name}</span>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <input type="number" value="${share}" min="0" step="0.5" 
+                               style="width: 80px; padding: 5px; border: 1px solid var(--border); border-radius: 4px;"
+                               onchange="updateShare('${person.id}', this.value)">
+                        <span>shares</span>
+                    </div>
+                `;
+                
+                container.appendChild(div);
+            });
+            
+            const totalShares = Object.values(state.shares).reduce((sum, val) => sum + val, 0) || state.people.length;
+            const validationDiv = document.createElement('div');
+            validationDiv.style.marginTop = '15px';
+            validationDiv.style.padding = '10px';
+            validationDiv.style.background = totalShares > 0 ? '#d1fae5' : '#fee2e2';
+            validationDiv.style.color = totalShares > 0 ? '#065f46' : '#991b1b';
+            validationDiv.style.borderRadius = '8px';
+            validationDiv.style.fontSize = '0.9rem';
+            validationDiv.innerHTML = `
+                <i class="fas fa-${totalShares > 0 ? 'check-circle' : 'exclamation-triangle'}"></i>
+                Total shares: ${totalShares}
+            `;
+            container.appendChild(validationDiv);
+        }
+
+        function updateShare(personId, value) {
+            const share = parseFloat(value) || 0;
+            state.shares[personId] = share;
+            showSharesInputs();
+        }
+
+        // Item-wise Assignment
+        function showAssignableItems() {
+            const container = document.getElementById('assignableItems');
+            container.innerHTML = '';
+            
+            state.billItems.forEach((item, index) => {
+                const assignedPeople = state.assignments[item.id] || [];
+                const div = document.createElement('div');
+                div.className = 'item-card';
+                div.style.cursor = 'pointer';
+                div.onclick = () => openAssignmentModal(item);
+                
+                let assignedText = 'Click to assign';
+                if (assignedPeople.length > 0) {
+                    const names = assignedPeople.map(pid => {
+                        const person = state.people.find(p => p.id === pid);
+                        return person ? person.name : '';
+                    }).filter(name => name);
+                    assignedText = `Assigned to: ${names.join(', ')}`;
+                    
+                    div.style.background = '#f0f9ff';
+                    div.style.borderLeftColor = 'var(--secondary)';
+                }
+                
+                div.innerHTML = `
+                    <div class="item-info">
+                        <div class="item-name">${item.name}</div>
+                        <div class="item-price">${state.currency}${item.price}</div>
+                        <div class="item-category ${item.category === 'alcohol' ? 'item-alcohol' : item.category === 'drink' ? 'item-drink' : ''}">
+                            ${item.category}
+                        </div>
+                        <div style="font-size: 0.8rem; color: var(--gray); margin-top: 2px;">
+                            ${assignedText}
+                        </div>
+                    </div>
+                    <i class="fas fa-chevron-right" style="color: var(--gray);"></i>
+                `;
+                container.appendChild(div);
+            });
+            
+            updateAssignmentsSummary();
+        }
+
+        function openAssignmentModal(item) {
+            currentItemForAssignment = item;
+            
+            document.getElementById('modalTitle').textContent = `Assign: ${item.name} (${state.currency}${item.price})`;
+            
+            const container = document.getElementById('modalPeopleList');
+            container.innerHTML = '';
+            
+            const assignedPeople = state.assignments[item.id] || [];
+            
+            state.people.forEach(person => {
+                const isAssigned = assignedPeople.includes(person.id);
+                const canHaveItem = !(item.category === 'alcohol' && person.status === 'non-drinker');
+                
+                const card = document.createElement('div');
+                card.className = `person-card ${isAssigned ? 'selected' : ''} ${!canHaveItem ? 'disabled' : ''}`;
+                card.style.opacity = canHaveItem ? '1' : '0.5';
+                card.style.cursor = canHaveItem ? 'pointer' : 'not-allowed';
+                
+                if (canHaveItem) {
+                    card.onclick = () => togglePersonSelection(person.id);
+                }
+                
+                const colors = ['#2563eb', '#10b981', '#f59e0b', '#8b5cf6', '#ef4444', '#06b6d4'];
+                const index = state.people.findIndex(p => p.id === person.id);
+                const color = colors[index % colors.length];
+                
+                card.innerHTML = `
+                    <div class="person-avatar" style="background: ${color}">
+                        ${person.name.charAt(0)}
+                    </div>
+                    <div class="person-name">${person.name}</div>
+                    <div class="person-status">${person.status === 'non-drinker' ? 'No alcohol' : 'Regular'}</div>
+                    ${!canHaveItem ? '<div style="font-size: 0.7rem; color: var(--danger); margin-top: 5px;">No alcohol</div>' : ''}
+                    ${isAssigned ? '<div style="margin-top: 5px;"><i class="fas fa-check-circle" style="color: var(--secondary);"></i></div>' : ''}
+                `;
+                container.appendChild(card);
+            });
+            
+            document.getElementById('assignmentModal').style.display = 'flex';
+        }
+
+        function togglePersonSelection(personId) {
+            if (!state.assignments[currentItemForAssignment.id]) {
+                state.assignments[currentItemForAssignment.id] = [];
+            }
+            
+            const index = state.assignments[currentItemForAssignment.id].indexOf(personId);
+            if (index > -1) {
+                state.assignments[currentItemForAssignment.id].splice(index, 1);
+            } else {
+                state.assignments[currentItemForAssignment.id].push(personId);
+            }
+            
+            openAssignmentModal(currentItemForAssignment);
+        }
+
+        function closeModal() {
+            document.getElementById('assignmentModal').style.display = 'none';
+            showAssignableItems();
+        }
+
+        function saveAssignment() {
+            document.getElementById('assignmentModal').style.display = 'none';
+            showAssignableItems();
+            updateAssignmentsSummary();
+        }
+
+        function autoAssignSharedItems() {
+            // Assign all non-alcohol items to all regular people
+            state.billItems.forEach(item => {
+                if (item.category !== 'alcohol') {
+                    const regularPeople = state.people
+                        .filter(p => p.status === 'regular')
+                        .map(p => p.id);
+                    
+                    state.assignments[item.id] = [...regularPeople];
+                }
+            });
+            
+            showAssignableItems();
+            updateAssignmentsSummary();
+            alert('Shared food items assigned to all regular people');
+        }
+
+        function clearAssignments() {
+            if (confirm('Clear all assignments?')) {
+                state.assignments = {};
+                showAssignableItems();
+                updateAssignmentsSummary();
+            }
+        }
+
+        function updateAssignmentsSummary() {
+            const container = document.getElementById('assignmentsList');
+            const summaryDiv = document.getElementById('currentAssignments');
+            
+            let assignedCount = 0;
+            let html = '';
+            
+            state.billItems.forEach(item => {
+                const assignedPeople = state.assignments[item.id] || [];
+                if (assignedPeople.length > 0) {
+                    assignedCount++;
+                    const names = assignedPeople.map(pid => {
+                        const person = state.people.find(p => p.id === pid);
+                        return person ? person.name : '';
+                    }).filter(name => name);
+                    
+                    html += `
+                        <div style="padding: 8px; background: white; border-radius: 5px; margin-bottom: 5px; border-left: 3px solid var(--primary);">
+                            <strong>${item.name}:</strong> ${names.join(', ')}
+                        </div>
+                    `;
+                }
+            });
+            
+            if (assignedCount > 0) {
+                container.innerHTML = html;
+                summaryDiv.classList.remove('hidden');
+            } else {
+                container.innerHTML = '';
+                summaryDiv.classList.add('hidden');
+            }
+        }
+
+        // Step 5: Calculate Split
+        function calculateSplit() {
+            if (state.splitMethod === 'itemwise') {
+                calculateItemwiseSplit();
+            } else if (state.splitMethod === 'equal') {
+                calculateEqualSplit();
+            } else if (state.splitMethod === 'custom') {
+                calculateCustomSplit();
+            } else if (state.splitMethod === 'shares') {
+                calculateSharesSplit();
+            }
+        }
+
+        function calculateItemwiseSplit() {
+            // Validate assignments
+            const unassignedItems = state.billItems.filter(item => 
+                !state.assignments[item.id] || state.assignments[item.id].length === 0
+            );
+            
+            if (unassignedItems.length > 0) {
+                if (!confirm(`${unassignedItems.length} items are not assigned. Calculate anyway?`)) {
+                    return;
+                }
+            }
+            
+            const personTotals = {};
+            state.people.forEach(person => {
+                personTotals[person.id] = {
+                    name: person.name,
+                    subtotal: 0,
+                    items: [],
+                    tax: 0,
+                    tip: 0
+                };
+            });
+            
+            // Calculate item splits
+            state.billItems.forEach(item => {
+                const assignedPeople = state.assignments[item.id] || [];
+                
+                if (assignedPeople.length > 0) {
+                    const validPeople = assignedPeople.filter(pid => {
+                        const person = state.people.find(p => p.id === pid);
+                        return !(item.category === 'alcohol' && person.status === 'non-drinker');
+                    });
+                    
+                    if (validPeople.length > 0) {
+                        const share = item.price / validPeople.length;
+                        
+                        validPeople.forEach(personId => {
+                            personTotals[personId].subtotal += share;
+                            personTotals[personId].items.push({
+                                name: item.name,
+                                price: share
+                            });
+                        });
+                    }
+                }
+            });
+            
+            // Add tax and tip proportionally
+            const totalSubtotal = Object.values(personTotals).reduce((sum, p) => sum + p.subtotal, 0);
+            
+            if (totalSubtotal > 0) {
+                Object.keys(personTotals).forEach(personId => {
+                    const person = personTotals[personId];
+                    const proportion = person.subtotal / totalSubtotal;
+                    
+                    person.tax = state.tax * proportion;
+                    person.tip = state.tip * proportion;
+                    person.subtotal += person.tax + person.tip;
+                });
+            }
+            
+            displayResults(personTotals);
+            goToStep(5);
+        }
+
+        function calculateEqualSplit() {
+            const total = getBillTotal();
+            const peopleCount = state.people.length;
+            const eachAmount = peopleCount > 0 ? total / peopleCount : 0;
+            
+            const personTotals = {};
+            state.people.forEach(person => {
+                personTotals[person.id] = {
+                    name: person.name,
+                    subtotal: eachAmount,
+                    items: [],
+                    tax: state.tax / peopleCount,
+                    tip: state.tip / peopleCount
+                };
+            });
+            
+            displayResults(personTotals);
+            goToStep(5);
+        }
+
+        function calculateCustomSplit() {
+            const total = getBillTotal();
+            
+            // Calculate total percentage
+            const totalPercentage = Object.values(state.customPercentages).reduce((sum, val) => sum + val, 0);
+            
+            if (Math.abs(totalPercentage - 100) > 0.01) {
+                alert(`Total percentage is ${totalPercentage.toFixed(2)}%. It should be exactly 100%.`);
+                return;
+            }
+            
+            const personTotals = {};
+            state.people.forEach(person => {
+                const percentage = state.customPercentages[person.id] || (100 / state.people.length);
+                const amount = total * (percentage / 100);
+                
+                personTotals[person.id] = {
+                    name: person.name,
+                    subtotal: amount,
+                    items: [],
+                    tax: state.tax * (percentage / 100),
+                    tip: state.tip * (percentage / 100)
+                };
+            });
+            
+            displayResults(personTotals);
+            goToStep(5);
+        }
+
+        function calculateSharesSplit() {
+            const total = getBillTotal();
+            
+            // Calculate total shares
+            const totalShares = Object.values(state.shares).reduce((sum, val) => sum + val, 0) || state.people.length;
+            
+            if (totalShares <= 0) {
+                alert('Total shares must be greater than 0');
+                return;
+            }
+            
+            const personTotals = {};
+            state.people.forEach(person => {
+                const share = state.shares[person.id] || 1;
+                const amount = total * (share / totalShares);
+                
+                personTotals[person.id] = {
+                    name: person.name,
+                    subtotal: amount,
+                    items: [],
+                    tax: state.tax * (share / totalShares),
+                    tip: state.tip * (share / totalShares)
+                };
+            });
+            
+            displayResults(personTotals);
+            goToStep(5);
+        }
+
+        function displayResults(personTotals) {
+            const container = document.getElementById('splitResults');
+            const totalElement = document.getElementById('finalTotal');
+            
+            let html = '';
+            let grandTotal = 0;
+            
+            Object.values(personTotals).forEach(person => {
+                grandTotal += person.subtotal;
+                
+                let itemDetails = '';
+                if (person.items.length > 0) {
+                    itemDetails = person.items.slice(0, 2).map(item => 
+                        `${item.name}: ${state.currency}${Math.round(item.price)}`
+                    ).join(' | ');
+                }
+                
+                html += `
+                    <div class="split-item">
+                        <div>
+                            <strong>${person.name}</strong>
+                            ${itemDetails ? `<div style="font-size: 0.85rem; opacity: 0.9; margin-top: 2px;">${itemDetails}</div>` : ''}
+                        </div>
+                        <div style="font-weight: 600; font-size: 1.1rem;">
+                            ${state.currency}${Math.round(person.subtotal)}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += `
+                <div class="split-item" style="border-top: 2px solid rgba(255,255,255,0.3); padding-top: 15px; margin-top: 10px; font-weight: bold;">
+                    <div>Total (${Object.keys(personTotals).length} people)</div>
+                    <div>${state.currency}${Math.round(grandTotal)}</div>
+                </div>
+            `;
+            
+            container.innerHTML = html;
+            totalElement.textContent = `${state.currency}${Math.round(grandTotal)}`;
+            
+            updateSummaryResults(personTotals);
+        }
+
+        function updateSummaryResults(personTotals) {
+            const container = document.getElementById('summaryContent');
+            const total = getBillTotal();
+            
+            let html = `
+                <div style="margin-bottom: 20px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 2px solid var(--border);">
+                        <span>Total Bill:</span>
+                        <span style="font-weight: 700; font-size: 1.2rem;">${state.currency}${total}</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                        <span>Tax:</span>
+                        <span>${state.currency}${state.tax}</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                        <span>Tip:</span>
+                        <span>${state.currency}${state.tip}</span>
+                    </div>
+                </div>
+                
+                <div style="background: #f0f9ff; padding: 15px; border-radius: 10px;">
+                    <h4 style="color: var(--primary); margin-bottom: 10px;">Per Person Share:</h4>
+            `;
+            
+            Object.values(personTotals).forEach(person => {
+                html += `
+                    <div style="display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid rgba(0,0,0,0.1);">
+                        <span>${person.name}:</span>
+                        <span style="font-weight: 600;">${state.currency}${Math.round(person.subtotal)}</span>
+                    </div>
+                `;
+            });
+            
+            html += `</div>`;
+            container.innerHTML = html;
+        }
+
+        // Navigation
+        function nextStep() {
+            if (state.currentStep < 5) {
+                // Validate before proceeding
+                if (state.currentStep === 1 && state.billItems.length === 0) {
+                    alert('Please add at least one bill item');
+                    return;
+                }
+                
+                if (state.currentStep === 2) {
+                    showDetectedItems();
+                }
+                
+                if (state.currentStep === 3 && state.people.length === 0) {
+                    alert('Please add at least one person');
+                    return;
+                }
+                
+                if (state.currentStep === 3) {
+                    selectSplitMethod('itemwise');
+                }
+                
+                goToStep(state.currentStep + 1);
+            }
+        }
+
+        function prevStep() {
+            if (state.currentStep > 1) {
+                goToStep(state.currentStep - 1);
+            }
+        }
+
+        function goToStep(step) {
+            state.currentStep = step;
+            
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.step').forEach(s => {
+                s.classList.remove('active');
+                s.classList.remove('completed');
+            });
+            
+            document.getElementById(`section${step}`).classList.add('active');
+            
+            for (let i = 1; i <= step; i++) {
+                const stepEl = document.getElementById(`step${i}`);
+                if (i < step) {
+                    stepEl.classList.add('completed');
+                } else {
+                    stepEl.classList.add('active');
+                }
+            }
+            
+            const progressPercent = ((step - 1) / 4) * 100;
+            document.getElementById('stepsFill').style.width = `${progressPercent}%`;
+            
+            updateSummary();
+        }
+
+        function updateSummary() {
+            const container = document.getElementById('summaryContent');
+            const total = getBillTotal();
+            
+            if (state.billItems.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 40px 20px; color: var(--gray);">
+                        <i class="fas fa-receipt" style="font-size: 3rem; margin-bottom: 15px;"></i>
+                        <p>Add bill items to see summary</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = `
+                <div style="margin-bottom: 20px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                        <span>Total Items:</span>
+                        <span>${state.billItems.length}</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                        <span>Bill Total:</span>
+                        <span style="font-weight: 700;">${state.currency}${total}</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                        <span>People:</span>
+                        <span>${state.people.length}</span>
+                    </div>
+                </div>
+            `;
+            
+            if (state.billItems.length > 0) {
+                html += `<div style="max-height: 200px; overflow-y: auto; margin-top: 15px;">`;
+                state.billItems.slice(0, 5).forEach(item => {
+                    html += `
+                        <div style="display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid var(--border); font-size: 0.9rem;">
+                            <span>${item.name}</span>
+                            <span>${state.currency}${item.price}</span>
+                        </div>
+                    `;
+                });
+                if (state.billItems.length > 5) {
+                    html += `<div style="text-align: center; padding: 5px; color: var(--gray); font-size: 0.8rem;">
+                        ...and ${state.billItems.length - 5} more items
+                    </div>`;
+                }
+                html += `</div>`;
+            }
+            
+            container.innerHTML = html;
+        }
+
+        // Utility Functions
+        function shareResults() {
+            let message = `*Bill Split Results*\n\n`;
+            message += `Total Bill: ${state.currency}${getBillTotal()}\n`;
+            message += `People: ${state.people.length}\n\n`;
+            message += `*Each Person's Share:*\n`;
+            
+            // Get results
+            const personTotals = {};
+            state.people.forEach(person => {
+                const share = getBillTotal() / state.people.length;
+                personTotals[person.id] = { name: person.name, subtotal: Math.round(share) };
+            });
+            
+            Object.values(personTotals).forEach(person => {
+                message += `• ${person.name}: ${state.currency}${person.subtotal}\n`;
+            });
+            
+            message += `\nGenerated by Smart Bill Split App`;
+            
+            const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+        }
+
+        function resetApp() {
+            if (confirm('Start a new bill? All current data will be lost.')) {
+                // Reset state
+                state.currentStep = 1;
+                state.billItems = [];
+                state.people = [];
+                state.assignments = {};
+                state.tax = 0;
+                state.tip = 0;
+                state.splitMethod = 'itemwise';
+                state.customPercentages = {};
+                state.shares = {};
+                
+                // Reset UI
+                document.getElementById('manualItems').innerHTML = '';
+                document.getElementById('newPersonName').value = '';
+                document.getElementById('itemName').value = '';
+                document.getElementById('itemPrice').value = '';
+                document.getElementById('taxAmount').value = '0';
+                document.getElementById('tipAmount').value = '0';
+                
+                // Add default people
+                addDefaultPeople();
+                
+                // Go to first step
+                goToStep(1);
+                switchTab('manual');
+                
+                alert('New bill started!');
+            }
+        }
+
+        // Initialize
+        updateSummary();
+    </script>
+</body>
+</html> 
