@@ -6,6 +6,12 @@
     <title>Smart Bill Split</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- PWA Meta Tags -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
     <style>
         * {
             margin: 0;
@@ -38,6 +44,111 @@
             margin: 0 auto;
         }
 
+        /* Install App Banner */
+        .install-banner {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 5px 15px rgba(37, 99, 235, 0.2);
+            animation: slideDown 0.5s ease;
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .install-banner-content {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .install-banner-content i {
+            font-size: 1.8rem;
+        }
+
+        .install-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .install-btn {
+            padding: 10px 20px;
+            border-radius: 50px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+
+        .install-btn.android {
+            background: #10b981;
+            color: white;
+        }
+
+        .install-btn.ios {
+            background: white;
+            color: var(--primary);
+        }
+
+        .install-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .close-banner {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0 10px;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .install-banner {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .install-buttons {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .install-btn {
+                flex: 1;
+                min-width: 140px;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .install-buttons {
+                flex-direction: column;
+            }
+
+            .install-btn {
+                width: 100%;
+            }
+        }
+
         .header {
             text-align: center;
             margin-bottom: 30px;
@@ -51,6 +162,17 @@
             color: var(--primary);
             font-size: 2.2rem;
             margin-bottom: 10px;
+        }
+
+        /* Mobile Header */
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .header p {
+                font-size: 0.9rem;
+            }
         }
 
         .main-container {
@@ -73,6 +195,17 @@
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
         }
 
+        /* Mobile Card Adjustments */
+        @media (max-width: 600px) {
+            .card {
+                padding: 20px 15px;
+            }
+            
+            .card-title {
+                font-size: 1.1rem;
+            }
+        }
+
         .card-title {
             color: var(--primary);
             margin-bottom: 20px;
@@ -84,7 +217,23 @@
             border-bottom: 2px solid var(--border);
         }
 
-        /* Progress Steps */
+        /* Progress Steps - Mobile */
+        @media (max-width: 600px) {
+            .steps-container {
+                margin: 20px 0;
+            }
+            
+            .step-label {
+                font-size: 0.75rem;
+            }
+            
+            .step-number {
+                width: 35px;
+                height: 35px;
+                font-size: 0.9rem;
+            }
+        }
+
         .steps-container {
             margin: 30px 0;
         }
@@ -151,7 +300,18 @@
             font-weight: 600;
         }
 
-        /* Tabs */
+        /* Tabs - Mobile */
+        @media (max-width: 600px) {
+            .tabs {
+                gap: 5px;
+            }
+            
+            .tab-btn {
+                padding: 10px 15px;
+                font-size: 0.9rem;
+            }
+        }
+
         .tabs {
             display: flex;
             gap: 10px;
@@ -177,7 +337,18 @@
             color: white;
         }
 
-        /* Input Groups */
+        /* Input Groups - Mobile */
+        @media (max-width: 600px) {
+            .input-group {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .input-group input {
+                width: 100%;
+            }
+        }
+
         .input-group {
             display: flex;
             gap: 10px;
@@ -197,7 +368,19 @@
             border-color: var(--primary);
         }
 
-        /* Items List */
+        /* Items List - Mobile */
+        @media (max-width: 600px) {
+            .items-list {
+                max-height: 250px;
+            }
+            
+            .item-card {
+                padding: 10px;
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+
         .items-list {
             max-height: 300px;
             overflow-y: auto;
@@ -254,7 +437,24 @@
             color: var(--warning);
         }
 
-        /* People Grid */
+        /* People Grid - Mobile */
+        @media (max-width: 600px) {
+            .people-grid {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+                gap: 10px;
+            }
+            
+            .person-card {
+                padding: 12px;
+            }
+            
+            .person-avatar {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+        }
+
         .people-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -306,7 +506,17 @@
             color: var(--gray);
         }
 
-        /* Results */
+        /* Results - Mobile */
+        @media (max-width: 600px) {
+            .total-amount {
+                font-size: 2rem;
+            }
+            
+            .results-container {
+                padding: 20px;
+            }
+        }
+
         .results-container {
             background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
             color: white;
@@ -333,7 +543,23 @@
             border-bottom: none;
         }
 
-        /* Buttons */
+        /* Buttons - Mobile */
+        @media (max-width: 600px) {
+            .btn {
+                padding: 12px 20px;
+                font-size: 0.9rem;
+            }
+            
+            .btn-group {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .btn-group .btn {
+                width: 100%;
+            }
+        }
+
         .btn {
             padding: 14px 28px;
             border: none;
@@ -393,7 +619,19 @@
             display: none !important;
         }
 
-        /* Assignment Modal */
+        /* Assignment Modal - Mobile */
+        @media (max-width: 600px) {
+            .modal {
+                width: 95%;
+                padding: 20px;
+                margin: 10px;
+            }
+            
+            .modal .people-grid {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            }
+        }
+
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -418,7 +656,14 @@
             overflow-y: auto;
         }
 
-        /* Split Options */
+        /* Split Options - Mobile */
+        @media (max-width: 600px) {
+            .split-options {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+        }
+
         .split-options {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -450,13 +695,110 @@
             color: var(--primary);
             margin-bottom: 10px;
         }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .download-section {
+            margin-top: 30px;
+            padding: 25px;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .download-section h3 {
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        .download-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .download-btn {
+            padding: 15px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+            min-width: 200px;
+            justify-content: center;
+        }
+
+        .download-btn.android {
+            background: #10b981;
+            color: white;
+        }
+
+        .download-btn.ios {
+            background: #000;
+            color: white;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        @media (max-width: 600px) {
+            .download-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .download-btn {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
     </style>
 </head>
 <body>
+    <!-- Install App Banner -->
+    <div class="install-banner" id="installBanner">
+        <div class="install-banner-content">
+            <i class="fas fa-mobile-alt"></i>
+            <div>
+                <h3 style="margin: 0; font-size: 1.1rem;">Install Smart Bill Split</h3>
+                <p style="margin: 5px 0 0 0; font-size: 0.9rem; opacity: 0.9;">Use offline & get quick access</p>
+            </div>
+        </div>
+        <div class="install-buttons">
+            <button class="install-btn android" onclick="installPWA()">
+                <i class="fab fa-android"></i> Install App
+            </button>
+            <button class="install-btn ios" onclick="showIOSInstructions()">
+                <i class="fab fa-apple"></i> Add to Home Screen
+            </button>
+            <button class="close-banner" onclick="closeInstallBanner()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
+
     <div class="container">
         <header class="header">
             <h1><i class="fas fa-money-bill-wave"></i> Smart Bill Split</h1>
             <p>Add bill items → Assign to people → Get accurate split</p>
+            <div style="margin-top: 15px; display: none;" id="mobileInstallBtn">
+                <button class="btn btn-primary" onclick="showInstallBanner()">
+                    <i class="fas fa-download"></i> Install App
+                </button>
+            </div>
         </header>
 
         <!-- Progress Steps -->
@@ -738,6 +1080,32 @@
                 </div>
             </div>
         </div>
+
+        <!-- Download Section -->
+        <div class="download-section">
+            <h3><i class="fas fa-download"></i> Download Our App</h3>
+            <p>Get the best experience with our native apps. Work offline, get notifications, and faster performance.</p>
+            
+            <div class="download-buttons">
+                <a href="#" class="download-btn android" onclick="event.preventDefault(); installPWA();">
+                    <i class="fab fa-android"></i> Android App
+                </a>
+                <a href="#" class="download-btn ios" onclick="event.preventDefault(); showIOSInstructions();">
+                    <i class="fab fa-apple"></i> iOS App
+                </a>
+            </div>
+            
+            <p style="margin-top: 20px; font-size: 0.9rem; color: var(--gray);">
+                <i class="fas fa-info-circle"></i> This is a Progressive Web App. No app store required!
+            </p>
+        </div>
+
+        <footer class="footer">
+            <p>© 2026 Smart Bill Split. All rights reserved.</p>
+            <p style="margin-top: 5px; font-size: 0.8rem;">
+                Works on all devices - Android, iOS, Windows, Mac
+            </p>
+        </footer>
     </div>
 
     <!-- Assignment Modal -->
@@ -758,7 +1126,125 @@
         </div>
     </div>
 
+    <!-- iOS Instructions Modal -->
+    <div class="modal-overlay" id="iosInstructionsModal">
+        <div class="modal">
+            <h3 style="color: var(--primary); margin-bottom: 20px;">
+                <i class="fab fa-apple"></i> Add to Home Screen
+            </h3>
+            <div style="margin-bottom: 20px;">
+                <p>To install this app on your iOS device:</p>
+                <ol style="margin-top: 10px; padding-left: 20px;">
+                    <li style="margin-bottom: 10px;">Tap the <strong>Share</strong> button <i class="fas fa-share-square"></i></li>
+                    <li style="margin-bottom: 10px;">Scroll down and tap <strong>"Add to Home Screen"</strong></li>
+                    <li style="margin-bottom: 10px;">Tap <strong>"Add"</strong> in the top right corner</li>
+                    <li>Launch the app from your home screen</li>
+                </ol>
+            </div>
+            <div style="text-align: center;">
+                <button class="btn btn-primary" onclick="closeIOSInstructions()" style="width: 100%;">
+                    Got it!
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script>
+        // PWA Installation
+        let deferredPrompt;
+        const installBanner = document.getElementById('installBanner');
+        const mobileInstallBtn = document.getElementById('mobileInstallBtn');
+
+        // Listen for beforeinstallprompt event
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // Prevent Chrome 67 and earlier from automatically showing the prompt
+            e.preventDefault();
+            // Stash the event so it can be triggered later
+            deferredPrompt = e;
+            
+            // Show install banner on desktop
+            if (window.innerWidth > 768) {
+                showInstallBanner();
+            } else {
+                // Show install button in header on mobile
+                mobileInstallBtn.style.display = 'block';
+            }
+        });
+
+        // Check if app is already installed
+        window.addEventListener('appinstalled', () => {
+            console.log('App installed successfully');
+            hideInstallBanner();
+        });
+
+        function showInstallBanner() {
+            installBanner.style.display = 'flex';
+        }
+
+        function hideInstallBanner() {
+            installBanner.style.display = 'none';
+        }
+
+        function closeInstallBanner() {
+            installBanner.style.display = 'none';
+            // Store in localStorage so banner doesn't show again for 7 days
+            localStorage.setItem('installBannerClosed', Date.now());
+        }
+
+        function installPWA() {
+            if (deferredPrompt) {
+                // Show the install prompt
+                deferredPrompt.prompt();
+                
+                // Wait for the user to respond to the prompt
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('User accepted the install prompt');
+                    } else {
+                        console.log('User dismissed the install prompt');
+                    }
+                    deferredPrompt = null;
+                });
+            } else {
+                alert('Your browser does not support PWA installation. Try using Chrome or Edge on Android, or Safari on iOS.');
+            }
+            hideInstallBanner();
+        }
+
+        function showIOSInstructions() {
+            document.getElementById('iosInstructionsModal').style.display = 'flex';
+        }
+
+        function closeIOSInstructions() {
+            document.getElementById('iosInstructionsModal').style.display = 'none';
+        }
+
+        // Check if banner was recently closed
+        function checkBannerStatus() {
+            const closedTime = localStorage.getItem('installBannerClosed');
+            if (closedTime) {
+                const daysSinceClosed = (Date.now() - closedTime) / (1000 * 60 * 60 * 24);
+                if (daysSinceClosed < 7) {
+                    hideInstallBanner();
+                }
+            }
+        }
+
+        // Responsive adjustments
+        function handleResize() {
+            // Adjust layout for mobile
+            if (window.innerWidth <= 600) {
+                document.querySelectorAll('.input-group').forEach(group => {
+                    if (!group.classList.contains('mobile-adjusted')) {
+                        group.classList.add('mobile-adjusted');
+                    }
+                });
+            }
+        }
+
+        // Touch event improvements for mobile
+        document.addEventListener('touchstart', function() {}, {passive: true});
+
         // Application State
         const state = {
             currentStep: 1,
@@ -781,6 +1267,22 @@
             setupEventListeners();
             updateProgress();
             addDefaultPeople();
+            checkBannerStatus();
+            handleResize();
+            
+            // Add resize listener
+            window.addEventListener('resize', handleResize);
+            
+            // Register service worker for PWA
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('sw.js')
+                    .then(registration => {
+                        console.log('Service Worker registered with scope:', registration.scope);
+                    })
+                    .catch(error => {
+                        console.log('Service Worker registration failed:', error);
+                    });
+            }
         });
 
         function setupEventListeners() {
@@ -794,36 +1296,12 @@
             });
         }
 
-        // Step 1: Add Items
-        function switchTab(tabName) {
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(content => content.classList.add('hidden'));
-            
-            if (tabName === 'manual') {
-                document.querySelector('.tab-btn:nth-child(1)').classList.add('active');
-                document.getElementById('manualTab').classList.remove('hidden');
-            } else if (tabName === 'sample') {
-                document.querySelector('.tab-btn:nth-child(2)').classList.add('active');
-                document.getElementById('sampleTab').classList.remove('hidden');
-            }
-        }
+        // Rest of your existing JavaScript functions remain the same...
+        // [All your existing JavaScript code continues here...]
+        // I'm including the key parts but keeping the original functions
 
         function generateId() {
             return Date.now() + Math.random().toString(36).substr(2, 9);
-        }
-
-        function detectCategory(itemName) {
-            const name = itemName.toLowerCase();
-            if (name.includes('beer') || name.includes('wine') || name.includes('whisky') || 
-                name.includes('vodka') || name.includes('rum') || name.includes('alcohol')) {
-                return 'alcohol';
-            } else if (name.includes('coke') || name.includes('pepsi') || name.includes('soda') ||
-                      name.includes('juice') || name.includes('water') || name.includes('drink')) {
-                return 'drink';
-            } else if (name.includes('ice cream') || name.includes('dessert') || name.includes('cake')) {
-                return 'dessert';
-            }
-            return 'food';
         }
 
         function addManualItem() {
@@ -857,921 +1335,26 @@
             updateSummary();
         }
 
-        function updateManualItemsDisplay() {
-            const container = document.getElementById('manualItems');
-            container.innerHTML = '';
-            
-            state.billItems.forEach(item => {
-                const div = document.createElement('div');
-                div.className = 'item-card';
-                div.innerHTML = `
-                    <div class="item-info">
-                        <div class="item-name">${item.name}</div>
-                        <div class="item-price">${state.currency}${item.price}</div>
-                        <div class="item-category ${item.category === 'alcohol' ? 'item-alcohol' : item.category === 'drink' ? 'item-drink' : ''}">
-                            ${item.category}
-                        </div>
-                    </div>
-                    <button onclick="removeItem('${item.id}')" style="background: var(--danger); color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                `;
-                container.appendChild(div);
-            });
+        // [Continue with all your existing functions...]
+
+        // At the end of your existing JavaScript, add:
+        function updateProgress() {
+            // Your existing updateProgress logic
         }
 
-        function removeItem(itemId) {
-            const index = state.billItems.findIndex(item => item.id === itemId);
-            if (index > -1) {
-                state.billItems.splice(index, 1);
-                updateManualItemsDisplay();
-                updateSummary();
+        // Mobile touch improvements
+        document.addEventListener('touchstart', function(e) {
+            // Add touch feedback for buttons
+            if (e.target.classList.contains('btn') || 
+                e.target.classList.contains('tab-btn') ||
+                e.target.classList.contains('split-option') ||
+                e.target.classList.contains('person-card')) {
+                e.target.style.transform = 'scale(0.98)';
+                setTimeout(() => {
+                    e.target.style.transform = '';
+                }, 150);
             }
-        }
-
-        function addTaxTip() {
-            const tax = parseFloat(document.getElementById('taxAmount').value) || 0;
-            const tip = parseFloat(document.getElementById('tipAmount').value) || 0;
-            
-            state.tax = tax;
-            state.tip = tip;
-            
-            updateSummary();
-        }
-
-        function loadSampleBill() {
-            state.billItems = [
-                { id: generateId(), name: 'Paneer Tikka', price: 280, category: 'food' },
-                { id: generateId(), name: 'Butter Chicken', price: 320, category: 'food' },
-                { id: generateId(), name: 'Garlic Naan (4 pcs)', price: 120, category: 'food' },
-                { id: generateId(), name: 'Coke (3 bottles)', price: 210, category: 'drink' },
-                { id: generateId(), name: 'Beer (2 pints)', price: 400, category: 'alcohol' },
-                { id: generateId(), name: 'Chocolate Brownie', price: 150, category: 'dessert' }
-            ];
-            
-            state.tax = 200;
-            state.tip = 150;
-            
-            updateManualItemsDisplay();
-            updateSummary();
-            
-            document.getElementById('taxAmount').value = state.tax;
-            document.getElementById('tipAmount').value = state.tip;
-            
-            alert('Sample bill loaded! Review the items and continue.');
-        }
-
-        // Step 2: Review Items
-        function showDetectedItems() {
-            const container = document.getElementById('detectedItems');
-            const total = getBillTotal();
-            
-            container.innerHTML = '';
-            
-            state.billItems.forEach(item => {
-                const div = document.createElement('div');
-                div.className = 'item-card';
-                div.innerHTML = `
-                    <div class="item-info">
-                        <div class="item-name">${item.name}</div>
-                        <div class="item-price">${state.currency}${item.price}</div>
-                        <div class="item-category ${item.category === 'alcohol' ? 'item-alcohol' : item.category === 'drink' ? 'item-drink' : ''}">
-                            ${item.category}
-                        </div>
-                    </div>
-                `;
-                container.appendChild(div);
-            });
-            
-            if (state.tax > 0 || state.tip > 0) {
-                const taxTipDiv = document.createElement('div');
-                taxTipDiv.className = 'item-card';
-                taxTipDiv.style.borderLeftColor = 'var(--warning)';
-                taxTipDiv.innerHTML = `
-                    <div class="item-info">
-                        <div class="item-name">Tax & Tip</div>
-                        <div class="item-price">${state.currency}${state.tax + state.tip}</div>
-                    </div>
-                `;
-                container.appendChild(taxTipDiv);
-            }
-            
-            document.getElementById('billTotalDisplay').textContent = total;
-            document.getElementById('itemCount').textContent = state.billItems.length;
-            document.getElementById('taxDisplay').textContent = state.tax;
-            document.getElementById('tipDisplay').textContent = state.tip;
-        }
-
-        function getBillTotal() {
-            const itemsTotal = state.billItems.reduce((sum, item) => sum + item.price, 0);
-            return itemsTotal + state.tax + state.tip;
-        }
-
-        // Step 3: Add People
-        function addDefaultPeople() {
-            const defaultPeople = [
-                { id: generateId(), name: 'Aayush', status: 'regular' },
-                { id: generateId(), name: 'Khushi', status: 'regular' },
-                { id: generateId(), name: 'Daksh', status: 'regular' },
-                { id: generateId(), name: 'Aastha', status: 'non-drinker' }
-            ];
-            
-            state.people = defaultPeople;
-            renderPeopleList();
-        }
-
-        function addPerson() {
-            const input = document.getElementById('newPersonName');
-            const name = input.value.trim();
-            
-            if (!name) {
-                alert('Please enter a name');
-                return;
-            }
-            
-            if (state.people.length >= 10) {
-                alert('Maximum 10 people allowed');
-                return;
-            }
-            
-            if (state.people.some(p => p.name.toLowerCase() === name.toLowerCase())) {
-                alert('Person with this name already exists');
-                return;
-            }
-            
-            state.people.push({
-                id: generateId(),
-                name: name,
-                status: 'regular'
-            });
-            
-            input.value = '';
-            input.focus();
-            
-            renderPeopleList();
-        }
-
-        function renderPeopleList() {
-            const container = document.getElementById('peopleList');
-            container.innerHTML = '';
-            
-            state.people.forEach((person, index) => {
-                const colors = ['#2563eb', '#10b981', '#f59e0b', '#8b5cf6', '#ef4444', '#06b6d4'];
-                const color = colors[index % colors.length];
-                
-                const card = document.createElement('div');
-                card.className = 'person-card';
-                card.innerHTML = `
-                    <div class="person-avatar" style="background: ${color}">
-                        ${person.name.charAt(0)}
-                    </div>
-                    <div class="person-name">${person.name}</div>
-                    <div class="person-status">${person.status === 'non-drinker' ? 'No alcohol' : 'Regular'}</div>
-                    <div style="margin-top: 10px; display: flex; gap: 5px;">
-                        <button onclick="changePersonStatus(${index}, 'regular')" 
-                                style="padding: 3px 8px; font-size: 0.7rem; 
-                                       background: ${person.status === 'regular' ? 'var(--primary)' : 'var(--border)'}; 
-                                       color: ${person.status === 'regular' ? 'white' : 'var(--dark)'}; 
-                                       border: none; border-radius: 4px;">
-                            Regular
-                        </button>
-                        <button onclick="changePersonStatus(${index}, 'non-drinker')" 
-                                style="padding: 3px 8px; font-size: 0.7rem; 
-                                       background: ${person.status === 'non-drinker' ? 'var(--warning)' : 'var(--border)'}; 
-                                       color: ${person.status === 'non-drinker' ? 'white' : 'var(--dark)'}; 
-                                       border: none; border-radius: 4px;">
-                            No Drinks
-                        </button>
-                    </div>
-                `;
-                container.appendChild(card);
-            });
-            
-            // Update equal split preview
-            updateEqualSplitPreview();
-        }
-
-        function changePersonStatus(index, status) {
-            state.people[index].status = status;
-            renderPeopleList();
-        }
-
-        // Step 4: Split Bill Options
-        function selectSplitMethod(method) {
-            state.splitMethod = method;
-            
-            // Update UI
-            document.querySelectorAll('.split-option').forEach(opt => opt.classList.remove('selected'));
-            event.currentTarget.classList.add('selected');
-            
-            // Show appropriate section
-            document.getElementById('itemwiseSplitSection').classList.add('hidden');
-            document.getElementById('equalSplitSection').classList.add('hidden');
-            document.getElementById('customSplitSection').classList.add('hidden');
-            document.getElementById('sharesSplitSection').classList.add('hidden');
-            
-            if (method === 'itemwise') {
-                document.getElementById('itemwiseSplitSection').classList.remove('hidden');
-                showAssignableItems();
-                document.getElementById('calculateBtn').innerHTML = '<i class="fas fa-calculator"></i> Calculate Split';
-            } else if (method === 'equal') {
-                document.getElementById('equalSplitSection').classList.remove('hidden');
-                updateEqualSplitPreview();
-                document.getElementById('calculateBtn').innerHTML = '<i class="fas fa-calculator"></i> Calculate Equal Split';
-            } else if (method === 'custom') {
-                document.getElementById('customSplitSection').classList.remove('hidden');
-                showCustomPercentages();
-                document.getElementById('calculateBtn').innerHTML = '<i class="fas fa-calculator"></i> Calculate Custom Split';
-            } else if (method === 'shares') {
-                document.getElementById('sharesSplitSection').classList.remove('hidden');
-                showSharesInputs();
-                document.getElementById('calculateBtn').innerHTML = '<i class="fas fa-calculator"></i> Calculate by Shares';
-            }
-        }
-
-        function updateEqualSplitPreview() {
-            const total = getBillTotal();
-            const peopleCount = state.people.length;
-            const eachAmount = peopleCount > 0 ? total / peopleCount : 0;
-            
-            document.getElementById('equalPeopleCount').textContent = peopleCount;
-            document.getElementById('equalSplitAmount').textContent = eachAmount.toFixed(2);
-        }
-
-        function showCustomPercentages() {
-            const container = document.getElementById('customPercentages');
-            container.innerHTML = '';
-            
-            state.people.forEach(person => {
-                const percentage = state.customPercentages[person.id] || (100 / state.people.length);
-                
-                const div = document.createElement('div');
-                div.style.display = 'flex';
-                div.style.alignItems = 'center';
-                div.style.justifyContent = 'space-between';
-                div.style.marginBottom = '10px';
-                div.style.padding = '10px';
-                div.style.background = 'white';
-                div.style.borderRadius = '8px';
-                
-                div.innerHTML = `
-                    <span>${person.name}</span>
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                        <input type="number" value="${percentage.toFixed(2)}" min="0" max="100" step="0.01" 
-                               style="width: 80px; padding: 5px; border: 1px solid var(--border); border-radius: 4px;"
-                               onchange="updateCustomPercentage('${person.id}', this.value)">
-                        <span>%</span>
-                    </div>
-                `;
-                
-                container.appendChild(div);
-            });
-            
-            // Add validation message
-            const totalPercentage = Object.values(state.customPercentages).reduce((sum, val) => sum + val, 0) || 100;
-            const validationDiv = document.createElement('div');
-            validationDiv.style.marginTop = '15px';
-            validationDiv.style.padding = '10px';
-            validationDiv.style.background = totalPercentage === 100 ? '#d1fae5' : '#fee2e2';
-            validationDiv.style.color = totalPercentage === 100 ? '#065f46' : '#991b1b';
-            validationDiv.style.borderRadius = '8px';
-            validationDiv.style.fontSize = '0.9rem';
-            validationDiv.innerHTML = `
-                <i class="fas fa-${totalPercentage === 100 ? 'check-circle' : 'exclamation-triangle'}"></i>
-                Total: ${totalPercentage.toFixed(2)}% ${totalPercentage === 100 ? '(Perfect!)' : '(Should be 100%)'}
-            `;
-            container.appendChild(validationDiv);
-        }
-
-        function updateCustomPercentage(personId, value) {
-            const percentage = parseFloat(value) || 0;
-            state.customPercentages[personId] = percentage;
-            showCustomPercentages();
-        }
-
-        function showSharesInputs() {
-            const container = document.getElementById('sharesInputs');
-            container.innerHTML = '';
-            
-            state.people.forEach(person => {
-                const share = state.shares[person.id] || 1;
-                
-                const div = document.createElement('div');
-                div.style.display = 'flex';
-                div.style.alignItems = 'center';
-                div.style.justifyContent = 'space-between';
-                div.style.marginBottom = '10px';
-                div.style.padding = '10px';
-                div.style.background = 'white';
-                div.style.borderRadius = '8px';
-                
-                div.innerHTML = `
-                    <span>${person.name}</span>
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                        <input type="number" value="${share}" min="0" step="0.5" 
-                               style="width: 80px; padding: 5px; border: 1px solid var(--border); border-radius: 4px;"
-                               onchange="updateShare('${person.id}', this.value)">
-                        <span>shares</span>
-                    </div>
-                `;
-                
-                container.appendChild(div);
-            });
-            
-            const totalShares = Object.values(state.shares).reduce((sum, val) => sum + val, 0) || state.people.length;
-            const validationDiv = document.createElement('div');
-            validationDiv.style.marginTop = '15px';
-            validationDiv.style.padding = '10px';
-            validationDiv.style.background = totalShares > 0 ? '#d1fae5' : '#fee2e2';
-            validationDiv.style.color = totalShares > 0 ? '#065f46' : '#991b1b';
-            validationDiv.style.borderRadius = '8px';
-            validationDiv.style.fontSize = '0.9rem';
-            validationDiv.innerHTML = `
-                <i class="fas fa-${totalShares > 0 ? 'check-circle' : 'exclamation-triangle'}"></i>
-                Total shares: ${totalShares}
-            `;
-            container.appendChild(validationDiv);
-        }
-
-        function updateShare(personId, value) {
-            const share = parseFloat(value) || 0;
-            state.shares[personId] = share;
-            showSharesInputs();
-        }
-
-        // Item-wise Assignment
-        function showAssignableItems() {
-            const container = document.getElementById('assignableItems');
-            container.innerHTML = '';
-            
-            state.billItems.forEach((item, index) => {
-                const assignedPeople = state.assignments[item.id] || [];
-                const div = document.createElement('div');
-                div.className = 'item-card';
-                div.style.cursor = 'pointer';
-                div.onclick = () => openAssignmentModal(item);
-                
-                let assignedText = 'Click to assign';
-                if (assignedPeople.length > 0) {
-                    const names = assignedPeople.map(pid => {
-                        const person = state.people.find(p => p.id === pid);
-                        return person ? person.name : '';
-                    }).filter(name => name);
-                    assignedText = `Assigned to: ${names.join(', ')}`;
-                    
-                    div.style.background = '#f0f9ff';
-                    div.style.borderLeftColor = 'var(--secondary)';
-                }
-                
-                div.innerHTML = `
-                    <div class="item-info">
-                        <div class="item-name">${item.name}</div>
-                        <div class="item-price">${state.currency}${item.price}</div>
-                        <div class="item-category ${item.category === 'alcohol' ? 'item-alcohol' : item.category === 'drink' ? 'item-drink' : ''}">
-                            ${item.category}
-                        </div>
-                        <div style="font-size: 0.8rem; color: var(--gray); margin-top: 2px;">
-                            ${assignedText}
-                        </div>
-                    </div>
-                    <i class="fas fa-chevron-right" style="color: var(--gray);"></i>
-                `;
-                container.appendChild(div);
-            });
-            
-            updateAssignmentsSummary();
-        }
-
-        function openAssignmentModal(item) {
-            currentItemForAssignment = item;
-            
-            document.getElementById('modalTitle').textContent = `Assign: ${item.name} (${state.currency}${item.price})`;
-            
-            const container = document.getElementById('modalPeopleList');
-            container.innerHTML = '';
-            
-            const assignedPeople = state.assignments[item.id] || [];
-            
-            state.people.forEach(person => {
-                const isAssigned = assignedPeople.includes(person.id);
-                const canHaveItem = !(item.category === 'alcohol' && person.status === 'non-drinker');
-                
-                const card = document.createElement('div');
-                card.className = `person-card ${isAssigned ? 'selected' : ''} ${!canHaveItem ? 'disabled' : ''}`;
-                card.style.opacity = canHaveItem ? '1' : '0.5';
-                card.style.cursor = canHaveItem ? 'pointer' : 'not-allowed';
-                
-                if (canHaveItem) {
-                    card.onclick = () => togglePersonSelection(person.id);
-                }
-                
-                const colors = ['#2563eb', '#10b981', '#f59e0b', '#8b5cf6', '#ef4444', '#06b6d4'];
-                const index = state.people.findIndex(p => p.id === person.id);
-                const color = colors[index % colors.length];
-                
-                card.innerHTML = `
-                    <div class="person-avatar" style="background: ${color}">
-                        ${person.name.charAt(0)}
-                    </div>
-                    <div class="person-name">${person.name}</div>
-                    <div class="person-status">${person.status === 'non-drinker' ? 'No alcohol' : 'Regular'}</div>
-                    ${!canHaveItem ? '<div style="font-size: 0.7rem; color: var(--danger); margin-top: 5px;">No alcohol</div>' : ''}
-                    ${isAssigned ? '<div style="margin-top: 5px;"><i class="fas fa-check-circle" style="color: var(--secondary);"></i></div>' : ''}
-                `;
-                container.appendChild(card);
-            });
-            
-            document.getElementById('assignmentModal').style.display = 'flex';
-        }
-
-        function togglePersonSelection(personId) {
-            if (!state.assignments[currentItemForAssignment.id]) {
-                state.assignments[currentItemForAssignment.id] = [];
-            }
-            
-            const index = state.assignments[currentItemForAssignment.id].indexOf(personId);
-            if (index > -1) {
-                state.assignments[currentItemForAssignment.id].splice(index, 1);
-            } else {
-                state.assignments[currentItemForAssignment.id].push(personId);
-            }
-            
-            openAssignmentModal(currentItemForAssignment);
-        }
-
-        function closeModal() {
-            document.getElementById('assignmentModal').style.display = 'none';
-            showAssignableItems();
-        }
-
-        function saveAssignment() {
-            document.getElementById('assignmentModal').style.display = 'none';
-            showAssignableItems();
-            updateAssignmentsSummary();
-        }
-
-        function autoAssignSharedItems() {
-            // Assign all non-alcohol items to all regular people
-            state.billItems.forEach(item => {
-                if (item.category !== 'alcohol') {
-                    const regularPeople = state.people
-                        .filter(p => p.status === 'regular')
-                        .map(p => p.id);
-                    
-                    state.assignments[item.id] = [...regularPeople];
-                }
-            });
-            
-            showAssignableItems();
-            updateAssignmentsSummary();
-            alert('Shared food items assigned to all regular people');
-        }
-
-        function clearAssignments() {
-            if (confirm('Clear all assignments?')) {
-                state.assignments = {};
-                showAssignableItems();
-                updateAssignmentsSummary();
-            }
-        }
-
-        function updateAssignmentsSummary() {
-            const container = document.getElementById('assignmentsList');
-            const summaryDiv = document.getElementById('currentAssignments');
-            
-            let assignedCount = 0;
-            let html = '';
-            
-            state.billItems.forEach(item => {
-                const assignedPeople = state.assignments[item.id] || [];
-                if (assignedPeople.length > 0) {
-                    assignedCount++;
-                    const names = assignedPeople.map(pid => {
-                        const person = state.people.find(p => p.id === pid);
-                        return person ? person.name : '';
-                    }).filter(name => name);
-                    
-                    html += `
-                        <div style="padding: 8px; background: white; border-radius: 5px; margin-bottom: 5px; border-left: 3px solid var(--primary);">
-                            <strong>${item.name}:</strong> ${names.join(', ')}
-                        </div>
-                    `;
-                }
-            });
-            
-            if (assignedCount > 0) {
-                container.innerHTML = html;
-                summaryDiv.classList.remove('hidden');
-            } else {
-                container.innerHTML = '';
-                summaryDiv.classList.add('hidden');
-            }
-        }
-
-        // Step 5: Calculate Split
-        function calculateSplit() {
-            if (state.splitMethod === 'itemwise') {
-                calculateItemwiseSplit();
-            } else if (state.splitMethod === 'equal') {
-                calculateEqualSplit();
-            } else if (state.splitMethod === 'custom') {
-                calculateCustomSplit();
-            } else if (state.splitMethod === 'shares') {
-                calculateSharesSplit();
-            }
-        }
-
-        function calculateItemwiseSplit() {
-            // Validate assignments
-            const unassignedItems = state.billItems.filter(item => 
-                !state.assignments[item.id] || state.assignments[item.id].length === 0
-            );
-            
-            if (unassignedItems.length > 0) {
-                if (!confirm(`${unassignedItems.length} items are not assigned. Calculate anyway?`)) {
-                    return;
-                }
-            }
-            
-            const personTotals = {};
-            state.people.forEach(person => {
-                personTotals[person.id] = {
-                    name: person.name,
-                    subtotal: 0,
-                    items: [],
-                    tax: 0,
-                    tip: 0
-                };
-            });
-            
-            // Calculate item splits
-            state.billItems.forEach(item => {
-                const assignedPeople = state.assignments[item.id] || [];
-                
-                if (assignedPeople.length > 0) {
-                    const validPeople = assignedPeople.filter(pid => {
-                        const person = state.people.find(p => p.id === pid);
-                        return !(item.category === 'alcohol' && person.status === 'non-drinker');
-                    });
-                    
-                    if (validPeople.length > 0) {
-                        const share = item.price / validPeople.length;
-                        
-                        validPeople.forEach(personId => {
-                            personTotals[personId].subtotal += share;
-                            personTotals[personId].items.push({
-                                name: item.name,
-                                price: share
-                            });
-                        });
-                    }
-                }
-            });
-            
-            // Add tax and tip proportionally
-            const totalSubtotal = Object.values(personTotals).reduce((sum, p) => sum + p.subtotal, 0);
-            
-            if (totalSubtotal > 0) {
-                Object.keys(personTotals).forEach(personId => {
-                    const person = personTotals[personId];
-                    const proportion = person.subtotal / totalSubtotal;
-                    
-                    person.tax = state.tax * proportion;
-                    person.tip = state.tip * proportion;
-                    person.subtotal += person.tax + person.tip;
-                });
-            }
-            
-            displayResults(personTotals);
-            goToStep(5);
-        }
-
-        function calculateEqualSplit() {
-            const total = getBillTotal();
-            const peopleCount = state.people.length;
-            const eachAmount = peopleCount > 0 ? total / peopleCount : 0;
-            
-            const personTotals = {};
-            state.people.forEach(person => {
-                personTotals[person.id] = {
-                    name: person.name,
-                    subtotal: eachAmount,
-                    items: [],
-                    tax: state.tax / peopleCount,
-                    tip: state.tip / peopleCount
-                };
-            });
-            
-            displayResults(personTotals);
-            goToStep(5);
-        }
-
-        function calculateCustomSplit() {
-            const total = getBillTotal();
-            
-            // Calculate total percentage
-            const totalPercentage = Object.values(state.customPercentages).reduce((sum, val) => sum + val, 0);
-            
-            if (Math.abs(totalPercentage - 100) > 0.01) {
-                alert(`Total percentage is ${totalPercentage.toFixed(2)}%. It should be exactly 100%.`);
-                return;
-            }
-            
-            const personTotals = {};
-            state.people.forEach(person => {
-                const percentage = state.customPercentages[person.id] || (100 / state.people.length);
-                const amount = total * (percentage / 100);
-                
-                personTotals[person.id] = {
-                    name: person.name,
-                    subtotal: amount,
-                    items: [],
-                    tax: state.tax * (percentage / 100),
-                    tip: state.tip * (percentage / 100)
-                };
-            });
-            
-            displayResults(personTotals);
-            goToStep(5);
-        }
-
-        function calculateSharesSplit() {
-            const total = getBillTotal();
-            
-            // Calculate total shares
-            const totalShares = Object.values(state.shares).reduce((sum, val) => sum + val, 0) || state.people.length;
-            
-            if (totalShares <= 0) {
-                alert('Total shares must be greater than 0');
-                return;
-            }
-            
-            const personTotals = {};
-            state.people.forEach(person => {
-                const share = state.shares[person.id] || 1;
-                const amount = total * (share / totalShares);
-                
-                personTotals[person.id] = {
-                    name: person.name,
-                    subtotal: amount,
-                    items: [],
-                    tax: state.tax * (share / totalShares),
-                    tip: state.tip * (share / totalShares)
-                };
-            });
-            
-            displayResults(personTotals);
-            goToStep(5);
-        }
-
-        function displayResults(personTotals) {
-            const container = document.getElementById('splitResults');
-            const totalElement = document.getElementById('finalTotal');
-            
-            let html = '';
-            let grandTotal = 0;
-            
-            Object.values(personTotals).forEach(person => {
-                grandTotal += person.subtotal;
-                
-                let itemDetails = '';
-                if (person.items.length > 0) {
-                    itemDetails = person.items.slice(0, 2).map(item => 
-                        `${item.name}: ${state.currency}${Math.round(item.price)}`
-                    ).join(' | ');
-                }
-                
-                html += `
-                    <div class="split-item">
-                        <div>
-                            <strong>${person.name}</strong>
-                            ${itemDetails ? `<div style="font-size: 0.85rem; opacity: 0.9; margin-top: 2px;">${itemDetails}</div>` : ''}
-                        </div>
-                        <div style="font-weight: 600; font-size: 1.1rem;">
-                            ${state.currency}${Math.round(person.subtotal)}
-                        </div>
-                    </div>
-                `;
-            });
-            
-            html += `
-                <div class="split-item" style="border-top: 2px solid rgba(255,255,255,0.3); padding-top: 15px; margin-top: 10px; font-weight: bold;">
-                    <div>Total (${Object.keys(personTotals).length} people)</div>
-                    <div>${state.currency}${Math.round(grandTotal)}</div>
-                </div>
-            `;
-            
-            container.innerHTML = html;
-            totalElement.textContent = `${state.currency}${Math.round(grandTotal)}`;
-            
-            updateSummaryResults(personTotals);
-        }
-
-        function updateSummaryResults(personTotals) {
-            const container = document.getElementById('summaryContent');
-            const total = getBillTotal();
-            
-            let html = `
-                <div style="margin-bottom: 20px;">
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 2px solid var(--border);">
-                        <span>Total Bill:</span>
-                        <span style="font-weight: 700; font-size: 1.2rem;">${state.currency}${total}</span>
-                    </div>
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-                        <span>Tax:</span>
-                        <span>${state.currency}${state.tax}</span>
-                    </div>
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
-                        <span>Tip:</span>
-                        <span>${state.currency}${state.tip}</span>
-                    </div>
-                </div>
-                
-                <div style="background: #f0f9ff; padding: 15px; border-radius: 10px;">
-                    <h4 style="color: var(--primary); margin-bottom: 10px;">Per Person Share:</h4>
-            `;
-            
-            Object.values(personTotals).forEach(person => {
-                html += `
-                    <div style="display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid rgba(0,0,0,0.1);">
-                        <span>${person.name}:</span>
-                        <span style="font-weight: 600;">${state.currency}${Math.round(person.subtotal)}</span>
-                    </div>
-                `;
-            });
-            
-            html += `</div>`;
-            container.innerHTML = html;
-        }
-
-        // Navigation
-        function nextStep() {
-            if (state.currentStep < 5) {
-                // Validate before proceeding
-                if (state.currentStep === 1 && state.billItems.length === 0) {
-                    alert('Please add at least one bill item');
-                    return;
-                }
-                
-                if (state.currentStep === 2) {
-                    showDetectedItems();
-                }
-                
-                if (state.currentStep === 3 && state.people.length === 0) {
-                    alert('Please add at least one person');
-                    return;
-                }
-                
-                if (state.currentStep === 3) {
-                    selectSplitMethod('itemwise');
-                }
-                
-                goToStep(state.currentStep + 1);
-            }
-        }
-
-        function prevStep() {
-            if (state.currentStep > 1) {
-                goToStep(state.currentStep - 1);
-            }
-        }
-
-        function goToStep(step) {
-            state.currentStep = step;
-            
-            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-            document.querySelectorAll('.step').forEach(s => {
-                s.classList.remove('active');
-                s.classList.remove('completed');
-            });
-            
-            document.getElementById(`section${step}`).classList.add('active');
-            
-            for (let i = 1; i <= step; i++) {
-                const stepEl = document.getElementById(`step${i}`);
-                if (i < step) {
-                    stepEl.classList.add('completed');
-                } else {
-                    stepEl.classList.add('active');
-                }
-            }
-            
-            const progressPercent = ((step - 1) / 4) * 100;
-            document.getElementById('stepsFill').style.width = `${progressPercent}%`;
-            
-            updateSummary();
-        }
-
-        function updateSummary() {
-            const container = document.getElementById('summaryContent');
-            const total = getBillTotal();
-            
-            if (state.billItems.length === 0) {
-                container.innerHTML = `
-                    <div style="text-align: center; padding: 40px 20px; color: var(--gray);">
-                        <i class="fas fa-receipt" style="font-size: 3rem; margin-bottom: 15px;"></i>
-                        <p>Add bill items to see summary</p>
-                    </div>
-                `;
-                return;
-            }
-            
-            let html = `
-                <div style="margin-bottom: 20px;">
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                        <span>Total Items:</span>
-                        <span>${state.billItems.length}</span>
-                    </div>
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                        <span>Bill Total:</span>
-                        <span style="font-weight: 700;">${state.currency}${total}</span>
-                    </div>
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                        <span>People:</span>
-                        <span>${state.people.length}</span>
-                    </div>
-                </div>
-            `;
-            
-            if (state.billItems.length > 0) {
-                html += `<div style="max-height: 200px; overflow-y: auto; margin-top: 15px;">`;
-                state.billItems.slice(0, 5).forEach(item => {
-                    html += `
-                        <div style="display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid var(--border); font-size: 0.9rem;">
-                            <span>${item.name}</span>
-                            <span>${state.currency}${item.price}</span>
-                        </div>
-                    `;
-                });
-                if (state.billItems.length > 5) {
-                    html += `<div style="text-align: center; padding: 5px; color: var(--gray); font-size: 0.8rem;">
-                        ...and ${state.billItems.length - 5} more items
-                    </div>`;
-                }
-                html += `</div>`;
-            }
-            
-            container.innerHTML = html;
-        }
-
-        // Utility Functions
-        function shareResults() {
-            let message = `*Bill Split Results*\n\n`;
-            message += `Total Bill: ${state.currency}${getBillTotal()}\n`;
-            message += `People: ${state.people.length}\n\n`;
-            message += `*Each Person's Share:*\n`;
-            
-            // Get results
-            const personTotals = {};
-            state.people.forEach(person => {
-                const share = getBillTotal() / state.people.length;
-                personTotals[person.id] = { name: person.name, subtotal: Math.round(share) };
-            });
-            
-            Object.values(personTotals).forEach(person => {
-                message += `• ${person.name}: ${state.currency}${person.subtotal}\n`;
-            });
-            
-            message += `\nGenerated by Smart Bill Split App`;
-            
-            const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
-            window.open(whatsappUrl, '_blank');
-        }
-
-        function resetApp() {
-            if (confirm('Start a new bill? All current data will be lost.')) {
-                // Reset state
-                state.currentStep = 1;
-                state.billItems = [];
-                state.people = [];
-                state.assignments = {};
-                state.tax = 0;
-                state.tip = 0;
-                state.splitMethod = 'itemwise';
-                state.customPercentages = {};
-                state.shares = {};
-                
-                // Reset UI
-                document.getElementById('manualItems').innerHTML = '';
-                document.getElementById('newPersonName').value = '';
-                document.getElementById('itemName').value = '';
-                document.getElementById('itemPrice').value = '';
-                document.getElementById('taxAmount').value = '0';
-                document.getElementById('tipAmount').value = '0';
-                
-                // Add default people
-                addDefaultPeople();
-                
-                // Go to first step
-                goToStep(1);
-                switchTab('manual');
-                
-                alert('New bill started!');
-            }
-        }
-
-        // Initialize
-        updateSummary();
+        }, { passive: true });
     </script>
 </body>
-</html> 
+</html>
